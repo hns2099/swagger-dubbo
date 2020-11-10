@@ -19,7 +19,7 @@ public class DubboConfig {
     public ApplicationConfig applicationConfig() {
         ApplicationConfig applicationConfig = new ApplicationConfig();
         applicationConfig.setName("dubbo-example-app");
-        applicationConfig.setOwner("Sayi");
+        applicationConfig.setOwner("yunai");
         return applicationConfig;
     }
 
