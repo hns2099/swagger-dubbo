@@ -48,14 +48,14 @@ public class SwaggerConfiguration {
 
             @Override
             public List<SwaggerResource> get() {
+                // 1. 调用 InMemorySwaggerResourcesProvider
                 List<SwaggerResource> resources = super.get();
-                // 补充
+                // 2. 添加 swagger-dubbo 的资源地址
                 SwaggerResource dubboSwaggerResource = new SwaggerResource();
                 dubboSwaggerResource.setName("dubbo");
-                dubboSwaggerResource.setLocation("/swagger-dubbo/api-docs");
                 dubboSwaggerResource.setSwaggerVersion("2.0");
                 dubboSwaggerResource.setUrl("/swagger-dubbo/api-docs");
-                //
+                dubboSwaggerResource.setLocation("/swagger-dubbo/api-docs"); // 即将废弃，和 url 属性等价。
                 resources.add(0, dubboSwaggerResource);
                 return resources;
             }
