@@ -2,6 +2,7 @@ package com.deepoove.swagger.dubbo.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -38,8 +39,8 @@ public class SwaggerDubboAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnClass(name = "org.apache.dubbo.config.spring.ServiceBean")
-    public IRefrenceManager refrenceManagerApache() {
-        return new ReferenceManagerApache();
+    public IRefrenceManager refrenceManagerApache(ApplicationContext applicationContext) {
+        return new ReferenceManagerApache(applicationContext);
     }
     
     @Bean

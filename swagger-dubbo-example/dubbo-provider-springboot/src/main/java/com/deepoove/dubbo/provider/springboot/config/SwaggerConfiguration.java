@@ -5,15 +5,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import springfox.documentation.spring.web.DocumentationCache;
+import springfox.documentation.spring.web.plugins.DocumentationPluginsManager;
 import springfox.documentation.swagger.web.InMemorySwaggerResourcesProvider;
 import springfox.documentation.swagger.web.SwaggerResource;
 import springfox.documentation.swagger.web.SwaggerResourcesProvider;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 import java.util.List;
 
 @Configuration
-@EnableSwagger2 // 标记项目启用 Swagger API 接口文档
+@EnableSwagger2WebMvc
 public class SwaggerConfiguration {
 
 //    @Bean
@@ -43,8 +44,8 @@ public class SwaggerConfiguration {
 
     @Bean
     @Primary
-    public SwaggerResourcesProvider newSwaggerResourcesProvider(Environment env, DocumentationCache documentationCache) {
-        return new InMemorySwaggerResourcesProvider(env, documentationCache) {
+    public SwaggerResourcesProvider newSwaggerResourcesProvider(Environment env, DocumentationCache documentationCache, DocumentationPluginsManager pluginsManager) {
+        return new InMemorySwaggerResourcesProvider(env, documentationCache, pluginsManager) {
 
             @Override
             public List<SwaggerResource> get() {

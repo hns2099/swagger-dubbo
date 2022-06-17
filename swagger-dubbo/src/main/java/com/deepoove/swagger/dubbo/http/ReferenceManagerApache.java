@@ -1,6 +1,5 @@
 package com.deepoove.swagger.dubbo.http;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.spring.ServiceBean;
-import org.apache.dubbo.config.spring.extension.SpringExtensionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -28,8 +26,10 @@ public class ReferenceManagerApache implements IRefrenceManager {
     private static Map<Class<?>, Object> interfaceMapRef = new ConcurrentHashMap<Class<?>, Object>();
 
     private static ApplicationConfig application;
+    private ApplicationContext applicationContext;
 
-    public ReferenceManagerApache() {
+    public ReferenceManagerApache(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -39,12 +39,7 @@ public class ReferenceManagerApache implements IRefrenceManager {
         }
         services = new HashSet<ServiceBean>();
         try {
-            Field field = SpringExtensionFactory.class.getDeclaredField("CONTEXTS");
-            field.setAccessible(true);
-            Set<ApplicationContext> contexts = (Set<ApplicationContext>)field.get(new SpringExtensionFactory());
-            for (ApplicationContext context : contexts){
-                services.addAll(context.getBeansOfType(ServiceBean.class).values());
-            }
+            services.addAll(this.applicationContext.getBeansOfType(ServiceBean.class).values());
         } catch (Exception e) {
             logger.error("Get All Dubbo Service Error", e);
         }
@@ -60,6 +55,7 @@ public class ReferenceManagerApache implements IRefrenceManager {
         
     }
 
+    @Override
     public Object getProxy(String interfaceClass) {
         init();
         Set<Entry<Class<?>, Object>> entrySet = interfaceMapProxy.entrySet();
@@ -82,6 +78,7 @@ public class ReferenceManagerApache implements IRefrenceManager {
         return null;
     }
 
+    @Override
     public Entry<Class<?>, Object> getRef(String interfaceClass) {
         init();
         Set<Entry<Class<?>, Object>> entrySet = interfaceMapRef.entrySet();
@@ -91,16 +88,19 @@ public class ReferenceManagerApache implements IRefrenceManager {
         return null;
     }
 
+    @Override
     public Collection<?> getServices() {
         init();
         return services;
     }
 
+    @Override
     public Object getApplication() {
         init();
         return application;
     }
 
+    @Override
     public Map<Class<?>, Object> getInterfaceMapRef() {
         init();
         return interfaceMapRef;

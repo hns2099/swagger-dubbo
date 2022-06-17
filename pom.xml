@@ -9,7 +9,7 @@
 
 	<groupId>com.deepoove</groupId>
 	<artifactId>swagger-dubbo-project</artifactId>
-	<version>2.0.1</version>
+	<version>2.0.1.1</version>
 	<packaging>pom</packaging>
 
 	<name>swagger-dubbo-project</name>
@@ -29,7 +29,7 @@
 			<email>adasai90@gmail.com</email>
 		</developer>
 	</developers>
-	
+
 	<scm>
 		<connection>scm:git:git@github.com:Sayi/swagger-dubbo.git</connection>
 		<developerConnection>scm:git:git@github.com:Sayi/swagger-dubbo.git</developerConnection>
@@ -39,7 +39,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>oss</id>
@@ -51,7 +51,7 @@
 		</repository>
 	</distributionManagement>
 
-	
+
 	<profiles>
 		<profile>
 			<id>release</id>
@@ -60,8 +60,8 @@
 					<plugin>
 						<artifactId>maven-compiler-plugin</artifactId>
 						<configuration>
-							<source>1.6</source>
-							<target>1.6</target>
+							<source>11</source>
+							<target>11</target>
 							<encoding>UTF-8</encoding>
 						</configuration>
 						<version>3.2</version>
@@ -134,8 +134,8 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>11</source>
+					<target>11</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 				<version>3.2</version>
