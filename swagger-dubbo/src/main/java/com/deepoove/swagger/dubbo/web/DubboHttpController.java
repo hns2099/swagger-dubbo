@@ -1,5 +1,6 @@
 package com.deepoove.swagger.dubbo.web;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -34,7 +35,7 @@ import io.swagger.util.PrimitiveType;
 @RequestMapping("${swagger.dubbo.http:h}")
 @Api(hidden = true)
 public class DubboHttpController {
-    
+
     @Autowired
     IRefrenceManager refrenceManager;
 
@@ -62,9 +63,9 @@ public class DubboHttpController {
 		Object ref = null;
 		Method method = null;
 		Object result = null;
-		
+
 		Entry<Class<?>, Object> entry = refrenceManager.getRef(interfaceClass);
-		
+
 		if (null == entry){
 		    logger.info("No Ref Service FOUND.");
 		    return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
@@ -83,7 +84,7 @@ public class DubboHttpController {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		}
 		String[] parameterNames = NameDiscover.parameterNameDiscover.getParameterNames(method);
-		
+
 		logger.info("[Swagger-dubbo] Invoke by " + swaggerDubboConfig.getCluster());
 		if (SwaggerDubboProperties.CLUSTER_RPC.equals(swaggerDubboConfig.getCluster())){
     		ref = refrenceManager.getProxy(interfaceClass);
@@ -102,12 +103,20 @@ public class DubboHttpController {
 			result = method.invoke(ref);
 		} else {
 			Object[] args = new Object[parameterNames.length];
+			String requestBodyStr = getStrFromHttpBody(request);
 			Type[] parameterTypes = method.getGenericParameterTypes();
 			Class<?>[] parameterClazz = method.getParameterTypes();
 
 			for (int i = 0; i < parameterNames.length; i++) {
+				String paramValue = null;
+				if(parameterNames.length == 1 && !"".equals(requestBodyStr)){
+					paramValue = requestBodyStr;
+				}
+				else{
+					paramValue = request.getParameter(parameterNames[i]);
+				}
 				Object suggestPrameterValue = suggestPrameterValue(parameterTypes[i],
-						parameterClazz[i], request.getParameter(parameterNames[i]));
+						parameterClazz[i], paramValue);
 				args[i] = suggestPrameterValue;
 			}
 			result = method.invoke(ref, args);
@@ -136,6 +145,22 @@ public class DubboHttpController {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	private String getStrFromHttpBody(HttpServletRequest request) {
+
+		String str;
+		StringBuilder wholeStr = new StringBuilder();
+		if(request != null){
+			try {
+				BufferedReader br = request.getReader();
+				while((str = br.readLine()) != null){
+					wholeStr.append(str);
+				}
+			} catch (IOException e) {
+			}
+		}
+		return wholeStr.toString();
 	}
 
 }

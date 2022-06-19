@@ -1,5 +1,6 @@
 package com.deepoove.dubbo.provider.springboot.config;
 
+import com.deepoove.swagger.dubbo.annotations.EnableDubboSwagger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -14,7 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 import java.util.List;
 
 @Configuration
-@EnableSwagger2WebMvc
+@EnableDubboSwagger
 public class SwaggerConfiguration {
 
 //    @Bean
