@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,18 +26,19 @@ import springfox.documentation.spring.web.json.Json;
 @Controller
 @RequestMapping("${swagger.dubbo.doc:swagger-dubbo}")
 @Api(hidden = true)
+@ConditionalOnClass(name = "org.apache.dubbo.config.spring.ServiceBean")
 public class SwaggerDubboController {
 
     public static final String DEFAULT_URL = "/api-docs";
     private static final String HAL_MEDIA_TYPE = "application/hal+json";
-    
+
 	@Autowired
 	private DubboServiceScanner dubboServiceScanner;
 	@Autowired
 	private SwaggerConfig dubboPropertyConfig;
 	@Autowired
 	private SwaggerDocCache swaggerDocCache;
-	
+
     @Autowired
     SwaggerDubboProperties swaggerDubboConfig;
 
@@ -45,16 +47,16 @@ public class SwaggerDubboController {
 	@Value("${swagger.dubbo.enable:true}")
 	private boolean enable = true;
 
-	@RequestMapping(value = DEFAULT_URL, 
-	        method = RequestMethod.GET, 
+	@RequestMapping(value = DEFAULT_URL,
+	        method = RequestMethod.GET,
 	        produces = {"application/json; charset=utf-8", HAL_MEDIA_TYPE})
 	@ResponseBody
 	public ResponseEntity<Json> getApiList() throws JsonProcessingException {
-		
+
 		if (!enable){
 			return new ResponseEntity<Json>(HttpStatus.NOT_FOUND);
 		}
-		
+
 		Swagger swagger = swaggerDocCache.getSwagger();
 		if (null != swagger){
 			return new ResponseEntity<Json>(new Json(io.swagger.util.Json.mapper().writeValueAsString(swagger)), HttpStatus.OK);

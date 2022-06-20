@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ import io.swagger.util.PrimitiveType;
 @Controller
 @RequestMapping("${swagger.dubbo.http:h}")
 @Api(hidden = true)
+@ConditionalOnClass(name = "org.apache.dubbo.config.spring.ServiceBean")
 public class DubboHttpController {
 
     @Autowired
